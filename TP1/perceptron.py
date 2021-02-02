@@ -35,14 +35,14 @@ class Perceptron:
 
 	def weigth_init(self):
 		for i in range(0, self.weigth_lenth):
-			self.weigth.append(random.randint(-1,1))
+			self.weigth.append(random.randint(0,1))
 		return self.weigth
 
 	def decision(self, x):
 		s = self.weigth[self.weigth_lenth - 1]
 		for i in range(0, self.weigth_lenth - 1):
 			s += self.weigth[i] * x[i]
-		return 1 if s >= 0 else -1
+		return 1 if s >= 0 else 0
 
 	def learn(self):
 		for e in self.data:
@@ -65,10 +65,6 @@ with open('diabetes.csv') as f:
 	data = []
 	for line in reader:
 		data.append([float(x) for x in line])
-dl = len(data[0])
-for i in range(0, len(data)):
-	if data[i][dl-1] == 0:
-		data[i][dl-1] = -1
 #print(data)
 
 """
@@ -77,7 +73,7 @@ data = []
 for i in cluster1:
 	data.append([i[0], i[1], 1])
 for i in cluster2:
-	data.append([i[0], i[1], -1])
+	data.append([i[0], i[1], 0])
 random.shuffle(data)
 """
 #print(data)
@@ -87,7 +83,7 @@ e = 0.1
 p = Perceptron(data, e)
 
 # n training iteration 
-n = 100
+n = 10
 for i in range(0,n):
 	if DEBUG: print(p.get_weigth())
 	p.learn()
@@ -98,10 +94,10 @@ w = p.get_weigth()
 wl = p.get_weigth_lenth()
 #print(w)
 for d in data:
-	teta = 0
+	teta = w[wl-1]
 	for i in range(0, wl-1):
 		teta += w[i] * d[i]
-	predicted = 1 if teta >= 0 else -1
+	predicted = 1 if teta >= 0 else 0
 	if predicted != d[wl-1]:
 		error+=1
 		print("Error prediction : Expected '{}' Predicted '{}' at '{}'".format(d[wl-1], predicted, data.index(d)))
