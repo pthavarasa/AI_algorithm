@@ -90,14 +90,9 @@ for i in range(0,n):
 
 # check all data's expected label and predicted label
 error = 0
-w = p.get_weigth()
 wl = p.get_weigth_lenth()
-#print(w)
 for d in data:
-	teta = w[wl-1]
-	for i in range(0, wl-1):
-		teta += w[i] * d[i]
-	predicted = 1 if teta >= 0 else 0
+	predicted = p.decision(d)
 	if predicted != d[wl-1]:
 		error+=1
 		print("Error prediction : Expected '{}' Predicted '{}' at '{}'".format(d[wl-1], predicted, data.index(d)))
