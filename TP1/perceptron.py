@@ -22,6 +22,7 @@ plt.scatter(centre2[0], centre2[1], color="red")
 #print(cluster1)
 #print(cluster2)
 
+DEBUG = False
 
 class Perceptron:
 	def __init__(self, data, e):
@@ -67,15 +68,23 @@ p = Perceptron(data, e)
 # n training iteration 
 n = 5
 for i in range(0,n):
-	#print(p.get_weigth())
+	if DEBUG: print(p.get_weigth())
 	p.learn()
 
 # check all data's expected label and predicted label
+error = 0
 w = p.get_weigth()
 for d in data:
-	print("excepted : ", d[2])
-	print("predicted : ", 1 if w[0]*d[0]+w[1]*d[1] >= 0 else -1)
-	print()
+	predicted = 1 if w[0]*d[0]+w[1]*d[1] >= 0 else -1
+	if predicted != d[2]:
+		error+=1
+		print("Error prediction : Expected '{}' Predicted '{}' at '{}'".format(d[2], predicted, data.index(d)))
+	if DEBUG:
+		print("excepted  : " + str(d[2]))
+		print("predicted : " + str(predicted))
+		print("")
+		
+print("Test passed with {}% error rate.".format(100*error/len(data)))
 
 #plt.show()
 
