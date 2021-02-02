@@ -2,6 +2,7 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import random
+import csv
 
 centre1=np.array([3,3])
 centre2=np.array([-3,-3])
@@ -53,6 +54,24 @@ class Perceptron:
 	
 	def get_weigth(self):
 		return self.weigth
+
+	def get_weigth_lenth(self):
+		return self.weigth_lenth
+
+
+with open('diabetes.csv') as f:
+	next(f)
+	reader = csv.reader(f)
+	data = []
+	for line in reader:
+		data.append([float(x) for x in line])
+dl = len(data[0])
+for i in range(0, len(data)):
+	if data[i][dl-1] == 0:
+		data[i][dl-1] = -1
+#print(data)
+
+"""
 # convert data to [x, y, label] and [ shuffle (just for testing) ]
 data = []
 for i in cluster1:
@@ -60,13 +79,15 @@ for i in cluster1:
 for i in cluster2:
 	data.append([i[0], i[1], -1])
 random.shuffle(data)
+"""
+#print(data)
 
 # init 
 e = 0.1
 p = Perceptron(data, e)
 
 # n training iteration 
-n = 5
+n = 100
 for i in range(0,n):
 	if DEBUG: print(p.get_weigth())
 	p.learn()
@@ -74,13 +95,18 @@ for i in range(0,n):
 # check all data's expected label and predicted label
 error = 0
 w = p.get_weigth()
+wl = p.get_weigth_lenth()
+#print(w)
 for d in data:
-	predicted = 1 if w[0]*d[0]+w[1]*d[1] >= 0 else -1
-	if predicted != d[2]:
+	teta = 0
+	for i in range(0, wl-1):
+		teta += w[i] * d[i]
+	predicted = 1 if teta >= 0 else -1
+	if predicted != d[wl-1]:
 		error+=1
-		print("Error prediction : Expected '{}' Predicted '{}' at '{}'".format(d[2], predicted, data.index(d)))
+		print("Error prediction : Expected '{}' Predicted '{}' at '{}'".format(d[wl-1], predicted, data.index(d)))
 	if DEBUG:
-		print("excepted  : " + str(d[2]))
+		print("excepted  : " + str(d[wl-1]))
 		print("predicted : " + str(predicted))
 		print("")
 		
