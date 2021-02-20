@@ -30,13 +30,17 @@ class KMEANS_Visualize(KMEANS):
 
 centre1=np.array([3,3])
 centre2=np.array([-3,-3])
+centre3=np.array([3,-3])
 sigma1=np.array([[1.5,0],[0,1.5]])
 sigma2=np.array([[1.5,0],[0,1.5]])
+sigma3=np.array([[1.5,0],[0,1.5]])
 taille1=200
 taille2=200
+taille3=200
 cluster1=np.random.multivariate_normal(centre1,sigma1,taille1)
 cluster2=np.random.multivariate_normal(centre2,sigma2,taille2)
+cluster3=np.random.multivariate_normal(centre3,sigma3,taille3)
 
-KM = KMEANS_Visualize(2,[*cluster1, *cluster2])
+KM = KMEANS_Visualize(3, [*cluster1, *cluster2, *cluster3])
 KM.learn()
 print(KM.centers)
