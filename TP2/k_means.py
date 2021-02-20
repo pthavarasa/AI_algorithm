@@ -61,6 +61,13 @@ class KMEANS:
   def show_centers(self):
     for c in self.centers:
       plt.scatter(c[0], c[1], color="red")
+
+  def inertie_intra_classe(self):
+    sum = 0
+    for c in range(self.k):
+      for i in range(len(self.clusters[c])):
+        sum += pow(self.distance(self.clusters[c][i], self.centers[c]), 2)
+    return sum
   
   def run(self):
     #plt.scatter([point[0] for point in self.data], [point[1] for point in self.data], color="pink")
@@ -69,13 +76,18 @@ class KMEANS:
     self.init_centers()
     #print(self.clusters)
     #print(self.centers)
-    for i in range(5):
-      self.assign_cluster()
+    condition = True
+    while condition:
       #print(self.clusters)
+      #print(self.clusters)
+      #print(self.centers)
+      self.assign_cluster()
+      inertie = self.inertie_intra_classe()
       self.show_cluster()
       self.show_centers()
       plt.show()
       self.centroid()
+      condition = inertie > self.inertie_intra_classe()
 
 
 
