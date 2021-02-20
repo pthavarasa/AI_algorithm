@@ -1,5 +1,6 @@
 from random import randint
 from random import choice
+from random import sample
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -8,79 +9,35 @@ class KMEANS:
   def __init__(self, k, data):
     self.k = k
     self.data = data
-    self.clusters = []
-    self.centers = []
-  
-  def init_clusters(self):
-    for _ in range(self.k):
-      self.clusters.append([])
-  
-  def init_centers(self):
-    while len(self.centers) != self.k:
-      random_data = choice(self.data)
-      if random_data not in self.centers:
-        self.centers.append(random_data)
+    self.clusters = [[] for _ in range(self.k)]
+    self.centers = sample(self.data, self.k)
+    self.color = ["#96%04x" % randint(0, 0xFFFF) for _ in range(self.k)]
   
   def distance(self, p1, p2):
-    sum = 0
-    for i in range(len(p1)):
-      sum += abs(p1[i] - p2[i])
-    return sum
+    return sum(abs(p1[i] - p2[i]) for i in range(len(p1)))
 
   def assign_cluster(self):
-    self.clusters = []
-    self.init_clusters()
+    self.clusters = [[] for _ in range(self.k)]
     for d in self.data:
-      dist = -1
-      cluster = 0
-      for i in range(len(self.centers)):
-        if dist == -1:
-          dist = self.distance(self.centers[i], d)
-        elif dist > self.distance(self.centers[i], d):
-          cluster = i
-      self.clusters[cluster].append(d)
+      self.clusters[min((val, id) for (id, val) in enumerate(self.distance(self.centers[k], d) for k in range(self.k)))[1]].append(d)
 
   def centroid(self):
-    for c in range(len(self.clusters)):
-      length = len(self.clusters[c])
-      sum = []
-      for i in self.clusters[c][0]:
-        sum.append(0)
-      for d in self.clusters[c]:
-        for e in range(len(d)):
-          sum[e] += d[e]
-      for i in range(len(sum)):
-        sum[i] = sum[i] * (1/length)
-      self.centers[c] = sum
+    self.centers = [[sum(d) * (1/len(c)) for d in zip(*c)] for c in self.clusters]
   
   def show_cluster(self):
-    color = ['pink', 'blue']
     for i in range(len(self.clusters)):
-      plt.scatter([point[0] for point in self.clusters[i]], [point[1] for point in self.clusters[i]], color=color[i])
+      plt.scatter([point[0] for point in self.clusters[i]], [point[1] for point in self.clusters[i]], color=self.color[i])
   
   def show_centers(self):
     for c in self.centers:
       plt.scatter(c[0], c[1], color="red")
 
   def inertie_intra_classe(self):
-    sum = 0
-    for c in range(self.k):
-      for i in range(len(self.clusters[c])):
-        sum += pow(self.distance(self.clusters[c][i], self.centers[c]), 2)
-    return sum
+    return sum(pow(self.distance(i, self.centers[c]), 2) for c in range(self.k) for i in self.clusters[c])
   
   def run(self):
-    #plt.scatter([point[0] for point in self.data], [point[1] for point in self.data], color="pink")
-    #plt.show()
-    self.init_clusters()
-    self.init_centers()
-    #print(self.clusters)
-    #print(self.centers)
     condition = True
     while condition:
-      #print(self.clusters)
-      #print(self.clusters)
-      #print(self.centers)
       self.assign_cluster()
       inertie = self.inertie_intra_classe()
       self.show_cluster()
